@@ -29,6 +29,13 @@ function data() {
         closeSideMenu() {
             this.isSideMenuOpen = false
         },
+        isSettingsMenuOpen: false,
+        toggleSettingsMenu() {
+            this.isSettingsMenuOpen = !this.isSettingsMenuOpen
+        },
+        closeSettingsMenu() {
+            this.isSettingsMenuOpen = false
+        },
         isNotificationsMenuOpen: false,
         toggleNotificationsMenu() {
             this.isNotificationsMenuOpen = !this.isNotificationsMenuOpen

@@ -46,25 +46,58 @@
                 <span class="ml-4">Lager</span>
             </a>
         </li>
+        {{--<li class="relative px-6 py-3">
+            @if(Request::is('user*'))
+                <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg md:rounded-br-lg" aria-hidden="true"></span>
+            @endif
+            <a href="{{ route('profile.show') }}" class="inline-flex items-center w-full text-sm font-semibold {{ Request::is('user*') ? 'text-gray-800 dark:text-gray-100' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                <em class="fa-solid fa-id-card w-5 h-5 inline-flex items-center justify-center"></em>
+                <span class="ml-4">Benutzer Profil</span>
+            </a>
+        </li>--}}
         <li class="relative px-6 py-3">
             <div class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
                 <span>Admin Bereich</span>
             </div>
         </li>
         <li class="relative px-6 py-3">
-            @if(Request::is('users*'))
+            @if(Request::is('benutzerverwaltung/users*'))
                 <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg md:rounded-br-lg" aria-hidden="true"></span>
             @endif
-            <a href="#" class="inline-flex items-center w-full text-sm font-semibold {{ Request::is('users*') ? 'text-gray-800 dark:text-gray-100' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+            <a href="{{ route('admin.users') }}" class="inline-flex items-center w-full text-sm font-semibold {{ Request::is('benutzerverwaltung/users*') ? 'text-gray-800 dark:text-gray-100' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
                 <em class="fa-solid fa-user w-5 h-5 inline-flex items-center justify-center"></em>
                 <span class="ml-4">Benutzer verwalten</span>
             </a>
         </li>
+        @role('superadmin')
+        <li class="relative px-6 py-3">
+            @if(Request::is('benutzerverwaltung/roles*'))
+                <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg md:rounded-br-lg" aria-hidden="true"></span>
+            @endif
+            <a href="{{ route('admin.roles') }}" class="inline-flex items-center w-full text-sm font-semibold {{ Request::is('benutzerverwaltung/roles*') ? 'text-gray-800 dark:text-gray-100' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                <em class="fa-solid fa-user-shield w-5 h-5 inline-flex items-center justify-center"></em>
+                <span class="ml-4">Rollen</span>
+            </a>
+        </li>
+        <li class="relative px-6 py-3">
+            @if(Request::is('benutzerverwaltung/permission*'))
+                <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg md:rounded-br-lg" aria-hidden="true"></span>
+            @endif
+            <a href="{{ route('admin.permission') }}" class="inline-flex items-center w-full text-sm font-semibold {{ Request::is('benutzerverwaltung/permission*') ? 'text-gray-800 dark:text-gray-100' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                <em class="fa-solid fa-user-secret w-5 h-5 inline-flex items-center justify-center"></em>
+                <span class="ml-4">Berechtigungen</span>
+            </a>
+        </li>
+        @endrole
         <li class="relative px-6 py-3">
             @if(Request::is('einstellungen*'))
                 <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg md:rounded-br-lg" aria-hidden="true"></span>
             @endif
-            <button class="inline-flex items-center justify-between w-full text-sm font-semibold {{ Request::is('einstellungen*') ? 'text-gray-800 dark:text-gray-100' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200" @click="toggleSettingsMenu" aria-haspopup="true">
+                <a href="{{ route('admin.settings.firma') }}" class="inline-flex items-center w-full text-sm font-semibold {{ Request::is('einstellungen*') ? 'text-gray-800 dark:text-gray-100' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                    <em class="fa-solid fa-gear w-5 h-5 inline-flex items-center justify-center"></em>
+                    <span class="ml-4">Einstellungen</span>
+                </a>
+            {{--<button class="inline-flex items-center justify-between w-full text-sm font-semibold {{ Request::is('einstellungen*') ? 'text-gray-800 dark:text-gray-100' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200" @click="toggleSettingsMenu" aria-haspopup="true">
                     <span class="inline-flex items-center">
                         <em class="fa-solid fa-gear w-5 h-5 inline-flex items-center justify-center"></em>
                         <span class="ml-4">{{ __('Settings') }}</span>
@@ -81,13 +114,13 @@
                     x-transition:leave="transition-all ease-in-out duration-300"
                     x-transition:leave-start="opacity-100 max-h-xl"
                     x-transition:leave-end="opacity-0 max-h-0"
-                    class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
+                    class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
                     aria-label="submenu" >
                     <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
                         <a class="w-full" href="pages/login.html">Login</a>
                     </li>
                 </ul>
-            </template>
+            </template>--}}
         </li>
     </ul>
 </div>

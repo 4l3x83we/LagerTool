@@ -15,30 +15,50 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
         <script src="{{ asset('assets/js/init-alpine.js') }}"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/datepicker.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{{--        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css" rel="stylesheet" />--}}
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.css" rel="stylesheet" />
+        @livewireStyles
+
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{{--        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>--}}
+{{--        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/datepicker.min.js"></script>--}}
 
         <!-- Styles -->
-        @livewireStyles
+
+        @livewireScripts
+        <fc:scripts />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/underground-works/clockwork-browser@1/dist/toolbar.js"></script>
     </head>
     <body>
-    <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
+    <div class="flex h-screen bg-gray-200 dark:bg-gray-900 text-gray-500 dark:text-gray-400" :class="{ 'overflow-hidden': isSideMenuOpen }">
         <x-partials.sidebar />
         <div class="flex flex-col flex-1 w-full">
             <x-partials.navigation />
 
             <main class="h-full overflow-y-auto">
-                <div class="grid px-6 mx-auto">
-                    {{ $slot }}
-                </div>
+                {{ $slot }}
             </main>
+
+            <x-partials.footer />
         </div>
     </div>
 
-    @livewireScripts
+    <script>
+        const notyf = new Notyf({
+            position: { x: 'right', y: 'top'}
+        });
+        Livewire.on('successAlert', alertMessage => {
+            notyf.success(alertMessage);
+        });
+        Livewire.on('errorAlert', alertMessage => {
+            notyf.error(alertMessage);
+        });
+    </script>
     @stack('js')
     @stack('scripts')
     </body>
