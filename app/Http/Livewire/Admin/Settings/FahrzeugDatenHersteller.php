@@ -10,14 +10,20 @@
 
 namespace App\Http\Livewire\Admin\Settings;
 
+use App\Imports\Admin\FahrzeugDatenHerstellerImport;
 use App\Models\Admin\FahrzeugDatenHersteller as FDH;
 use App\Models\Admin\Hersteller;
 use App\Models\Admin\Models;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
+use ProtoneMedia\LaravelCrossEloquentSearch\Search;
 
 class FahrzeugDatenHersteller extends Component
 {
-    public $fdhs;
+    use WithFileUploads;
+    use WithPagination;
 
     public $model_id;
 
@@ -37,7 +43,7 @@ class FahrzeugDatenHersteller extends Component
 
     public $fdh_kraftstoff;
 
-    public $amount = 15;
+    public $amount = 50;
 
     public $updateMode = false;
 
@@ -47,7 +53,15 @@ class FahrzeugDatenHersteller extends Component
 
     public $herstellers;
 
+    public $importMode = false;
+
+    public $import;
+
     public $fzHersteller = null;
+
+    public $search = '';
+
+    public $arrays = [];
 
     protected $rules = [
         'model_id' => 'required',
@@ -74,6 +88,37 @@ class FahrzeugDatenHersteller extends Component
         'fdh_kraftstoff.required' => 'Bitte gib die Kraftstoffart an',
     ];
 
+    public function importUpload()
+    {
+        $this->validate([
+            'import' => 'required|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new FahrzeugDatenHerstellerImport, $this->import);
+
+        session()->flash('success', 'Fahrzeugdaten wurden importiert.');
+        $this->resetInput();
+        $this->importMode = false;
+    }
+
+    public function import()
+    {
+        $this->importMode = true;
+    }
+
+    public function resetInput()
+    {
+//        $this->model_id = null;
+//        $this->fzHersteller = null;
+//        $this->fdh_hsn = null;
+        $this->fdh_tsn = null;
+//        $this->fdh_type = null;
+        $this->fdh_kw = null;
+        $this->fdh_ps = null;
+        $this->fdh_hubraum = null;
+        $this->fdh_kraftstoff = null;
+    }
+
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName);
@@ -88,13 +133,13 @@ class FahrzeugDatenHersteller extends Component
 
     public function load()
     {
-        $this->amount += 15;
+        $this->amount += 50;
     }
 
     public function mount()
     {
-        $this->herstellers = Hersteller::orderBy('hr_name')->get();
         $this->arrays = fahrzeugSpecs();
+        $this->herstellers = Hersteller::orderBy('hr_name')->get();
     }
 
     public function store()
@@ -106,7 +151,7 @@ class FahrzeugDatenHersteller extends Component
             'model_id' => $this->model_id,
             'hersteller_id' => $this->fzHersteller,
             'fdh_hsn' => $this->fdh_hsn,
-            'fdh_tsn' => $this->fdh_tsn,
+            'fdh_tsn' => strtoupper($this->fdh_tsn),
             'fdh_type' => $this->fdh_type,
             'fdh_kw' => $this->fdh_kw,
             'fdh_ps' => $ps,
@@ -116,19 +161,6 @@ class FahrzeugDatenHersteller extends Component
 
         session()->flash('success', 'Fahrzeugdaten wurden dem Model hinzugefügt.');
         $this->resetInput();
-    }
-
-    public function resetInput()
-    {
-        $this->model_id = null;
-        $this->fzHersteller = null;
-        $this->fdh_hsn = null;
-        $this->fdh_tsn = null;
-        $this->fdh_type = null;
-        $this->fdh_kw = null;
-        $this->fdh_ps = null;
-        $this->fdh_hubraum = null;
-        $this->fdh_kraftstoff = null;
     }
 
     public function edit($id)
@@ -181,8 +213,20 @@ class FahrzeugDatenHersteller extends Component
     public function render()
     {
         $pages = [[['text' => 'Vehicle Data', 'link' => '']]];
-        $this->fdhs = FDH::take($this->amount)->with('models')->orderBy('fdh_type')->get();
+        /*$this->fdhs = FDH::take($this->amount)
+            ->with('models')
+            ->with('hersteller')
+            ->search('fdh_hsn', $this->search)
+            ->orSearch('fdh_tsn', $this->search)
+            ->orderBy('id', 'DESC')
+            ->get();*/
 
-        return view('livewire.admin.settings.fdh', ['pages' => $pages]);
+        $fdhs = Search::add(FDH::class, ['fdh_hsn', 'fdh_tsn', 'hersteller.hr_name', 'models.md_name'])
+            ->beginWithWildcard()
+            ->orderByDesc()
+            ->paginate(50)
+            ->search($this->search);
+
+        return view('livewire.admin.settings.fdh', ['pages' => $pages, 'fdhs' => $fdhs]);
     }
 }

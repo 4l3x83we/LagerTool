@@ -243,5 +243,21 @@
     "Vehicle Data": "Fahrzeugdaten",
     "Settings Vehicle Data": "Einstellungen Fahrzeugdaten",
     "Emission Class": "Emissionsklasse",
-    "Settings Emission Class": "Einstellungen Emissionsklasse"
+    "Settings Emission Class": "Einstellungen Emissionsklasse",
+    "Customers": "Kunden",
+    "Vehicles": "Fahrzeuge",
+    "Add New Customers": "Neuen Kunden hinzufügen",
+    "Add New Vehicle": "Neues Fahrzeug hinzufügen",
+    "Process aborted!": "Vorgang wurde abgebrochen!",
+    "Delete!": "Löschen!",
+    "Cancel!": "Abbrechen!",
+    "Cancelled": "Abgebrochen",
+    "Deleted!": "Gelöscht!",
+    "Data will be deleted": "Daten werden gelöscht",
+    "Are you Sure?": "Bist du dir sicher?",
+    "The data has been deleted.": "Die Daten wurden gelöscht.",
+    "Prev": "Zurück",
+    "Clear": "Löschen",
+    "Create a new storage location": "Neuen Lagerplatz anlegen",
+    "Create new item": "Neuen Artikel anlegen"
 }

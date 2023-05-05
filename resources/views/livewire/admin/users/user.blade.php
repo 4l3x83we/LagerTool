@@ -1,48 +1,34 @@
 <div>
-    <div class="px-6 mx-auto grid">
-        <div class="w-full overflow-hidden">
-            <div class="w-full overflow-x-auto">
-                <x-ag.error.errorMessages/>
-                <x-ag.breadcrumb home="Dashboard" page="Users" route="admin.users" text="{{ __('Users') }}">
-                    @if(!empty($pages))
-                        @foreach($pages as $page)
-                            <li aria-current="page">
-                                <div class="flex items-center">
-                                    <svg aria-hidden="true" class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">{{ $page['text'] }}</span>
-                                </div>
-                            </li>
-                        @endforeach
-                    @endif
-                </x-ag.breadcrumb>
-                <div class="flex items-center justify-between flex-wrap my-4">
-                    @can(['show', 'create', 'update'])
-                        @if($updateMode)
-                            @can('update')
-                                <span class="text-lg text-gray-500 md:text-xl dark:text-gray-400">{{ $user->name }}</span>
-                                <x-ag.button wire:click="updateModeClose()" class="px-3 py-2 bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 text-xs" icon-left="fa-rotate-left" button-text="{{ __('Back') }}"/>
-                            @endcan
-                        @elseif($createMode)
-                            @can('create')
-                                <span class="text-lg text-gray-500 md:text-xl dark:text-gray-400">{{ __('Add New User') }}</span>
-                                <x-ag.button wire:click="updateModeClose()" class="px-3 py-2 bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 text-xs" icon-left="fa-rotate-left" button-text="{{ __('Back') }}"/>
-                            @endcan
-                        @elseif($showMode)
-                            @can('show')
-                                <span class="text-lg text-gray-500 md:text-xl dark:text-gray-400">{{ $user->name }}</span>
-                            @endcan
-                        @else
-                            <span class="text-lg text-gray-500 md:text-xl dark:text-gray-400">{{ __('Manage your users here.') }}</span>
-                            @can('show')
-                                <x-ag.button wire:click="create()" class="px-3 py-2 text-xs" icon-left="fa-plus" button-text="{{ __('Add New User') }}"/>
-                            @endcan
-                        @endif
-                    @endcan
-                </div>
+    <x-ag.header-admin current-text="Benutzer verwalten" render="benutzerVerwalten">
+        {{--<x-slot:headline>
+        </x-slot:headline>--}}
 
-                @can(['show', 'create', 'update'])
+        <div class="flex items-center justify-between flex-wrap my-4">
+            @can(['show', 'create', 'update'])
+                @if($updateMode)
+                    @can('update')
+                        <span class="text-lg text-gray-500 md:text-xl dark:text-gray-400">{{ $user->name }}</span>
+                        <x-ag.button wire:click="updateModeClose()" class="px-3 py-2 bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 text-xs" icon-left="fa-rotate-left" button-text="{{ __('Back') }}"/>
+                    @endcan
+                @elseif($createMode)
+                    @can('create')
+                        <span class="text-lg text-gray-500 md:text-xl dark:text-gray-400">{{ __('Add New User') }}</span>
+                        <x-ag.button wire:click="updateModeClose()" class="px-3 py-2 bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 text-xs" icon-left="fa-rotate-left" button-text="{{ __('Back') }}"/>
+                    @endcan
+                @elseif($showMode)
+                    @can('show')
+                        <span class="text-lg text-gray-500 md:text-xl dark:text-gray-400">{{ $user->name }}</span>
+                    @endcan
+                @else
+                    <span class="text-lg text-gray-500 md:text-xl dark:text-gray-400">{{ __('Manage your users here.') }}</span>
+                    @can('show')
+                        <x-ag.button wire:click="create()" class="px-3 py-2 text-xs" icon-left="fa-plus" button-text="{{ __('Add New User') }}"/>
+                    @endcan
+                @endif
+            @endcan
+        </div>
+
+        @can(['show', 'create', 'update'])
                     @if($updateMode)
                         @can('update')
                             @include('livewire.admin.users.partials.edit')
@@ -187,7 +173,5 @@
                         @endcan
                     @endif
                 @endcan
-            </div>
-        </div>
-    </div>
+    </x-ag.header-admin>
 </div>

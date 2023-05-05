@@ -26,7 +26,7 @@
             </div>
         </div>
     </nav>
-    <x-ag.header-admin current-page="Settings" current-text="Settings Manufacturer" current-route="admin.settings.hersteller" :pages="$pages">
+    <x-ag.header-admin current-text="Settings Manufacturer" render="hersteller">
         <x-slot:headline></x-slot:headline>
         @can(['create', 'update'])
 

@@ -10,5 +10,5 @@
     ][$textWidth ?? '2xl'];
 @endphp
 
-<{{$heading}} {{ $attributes->merge(['class' => $textWidth]) }}>{{ $text }}</{{ $heading }}>
+<{{$heading}} {{ $attributes->merge(['class' => $textWidth]) }}>{!! $text !!}</{{ $heading }}>
 

@@ -6,10 +6,7 @@ $classSelect = [
 [$classSelect ?? 'formSelect'];
 @endphp
 
-<select {{ $attributes->merge([
-    'id' => $id,
-    'class' => $classSelect
-    ]) }}>
+<select {{ $attributes->merge(['id' => $id, 'class' => $classSelect]) }}>
     <option value="null" disabled>{{ __('Please select') }}</option>
     {{ $slot }}
 </select>

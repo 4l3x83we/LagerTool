@@ -21,6 +21,9 @@
         <a href="{{ route('admin.settings.model') }}" class="block py-2 pl-3 pr-4 rounded lg:bg-transparent lg:p-0 {{ request()->is('einstellungen/model*') ? 'text-white bg-blue-700 lg:text-blue-700 dark:text-white lg:dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-700 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent' }}">Model</a>
     </li>
     <li>
+        <a href="{{ route('admin.settings.hsn') }}" class="block py-2 pl-3 pr-4 rounded lg:bg-transparent lg:p-0 {{ request()->is('einstellungen/hsn*') ? 'text-white bg-blue-700 lg:text-blue-700 dark:text-white lg:dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-700 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent' }}">HSN</a>
+    </li>
+    <li>
         <a href="{{ route('admin.settings.fahrzeugdaten') }}" class="block py-2 pl-3 pr-4 rounded lg:bg-transparent lg:p-0 {{ request()->is('einstellungen/fahrzeugdaten*') ? 'text-white bg-blue-700 lg:text-blue-700 dark:text-white lg:dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-700 dark:text-white lg:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent' }}">Fahrzeugdaten</a>
     </li>
     <li>

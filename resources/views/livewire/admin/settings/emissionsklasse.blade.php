@@ -27,7 +27,7 @@
             </div>
         </div>
     </nav>
-    <x-ag.header-admin current-page="Settings" current-text="Settings Emission Class" current-route="admin.settings.emissionsklasse" :pages="$pages">
+    <x-ag.header-admin current-text="Settings Emission Class" render="emissionsklasse">
         <x-slot:headline></x-slot:headline>
         @can('create')
             @include('livewire.admin.settings.emissionsklasse.create')

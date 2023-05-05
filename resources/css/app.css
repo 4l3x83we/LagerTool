@@ -8,3 +8,37 @@
 @tailwind utilities;
 
 [x-cloak] { display: none !important; }
+
+.sortable {
+    cursor: pointer;
+}
+.sortable:after {
+    content: "\f077";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    padding-left: 8px;
+    transition: 0.3s;
+    opacity: 0;
+}
+.sortable:hover:after {
+    opacity: 1;
+}
+.sortable.desc:after {
+    content: "\f078";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    padding-left: 8px;
+    transition: 0.3s;
+    opacity: 1;
+}
+.sortable.desc:hover:after {
+    opacity: 0;
+}
+.sortable.asc:after {
+    content: "\f077";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    padding-left: 8px;
+    transition: 0.3s;
+    opacity: 1;
+}

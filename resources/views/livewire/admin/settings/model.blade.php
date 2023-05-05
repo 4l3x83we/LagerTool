@@ -26,7 +26,7 @@
             </div>
         </div>
     </nav>
-    <x-ag.header-admin current-page="Settings" current-text="Settings Model" current-route="admin.settings.model" :pages="$pages">
+    <x-ag.header-admin render="model" current-text="Settings Model">
         <x-slot:headline></x-slot:headline>
         @can(['create', 'update'])
 
@@ -44,7 +44,7 @@
 
         @endcan
 
-        @if(!$updateMode)
+        {{--@if(!$updateMode)
             <div class="grid grid-cols-1 gap-y-4 mb-4">
                 <div id="accordion-collapse" data-accordion="collapse">
                     @foreach(sort_by_hersteller($amount) as $key => $value)
@@ -64,7 +64,7 @@
                                             <x-slot:tbody>
                                                 @foreach($he->models as $item)
                                                     <x-ag.tr>
-                                                        <td class="px-4 py-2">{{ $item->md_name }}</td>
+                                                        <td class="px-4 py-2">{{ $item->md_name . ' (' .$item->id. ')' }}</td>
                                                         <td class="px-4 py-2">
                                                             <div class="flex justify-end items-center">
                                                                 <x-ag.buttonLink wire:click="edit({{$item->id}})" class="text-blue-500 hover:text-blue-700 mr-8" icon="fa-pen" />
@@ -83,6 +83,6 @@
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
                 </div>
             </div>
-        @endif
+        @endif--}}
     </x-ag.header-admin>
 </div>

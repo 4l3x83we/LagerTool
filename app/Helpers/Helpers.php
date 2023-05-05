@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Admin\Hersteller;
+use Illuminate\Support\Collection;
+use LaravelIdea\Helper\App\Models\Admin\_IH_Hersteller_C;
 
 /**
  * Copyright (c) Alexander Guthmann.
@@ -10,7 +12,115 @@ use App\Models\Admin\Hersteller;
  * Date: 03.April.2023
  * Time: 17:24
  */
-function countryCode()
+function bytesToHuman($bytes): string
+{
+    $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+    $step = 1024;
+    $i = 0;
+    while (($bytes / $step) > 0.9) {
+        $bytes /= $step;
+        $i++;
+    }
+
+    return round($bytes, 2).' '.$units[$i];
+}
+function allFileSize($path)
+{
+    $fileSize = 0;
+    foreach (File::allFiles(public_path($path)) as $file) {
+        $fileSize += $file->getSize();
+    }
+
+    return bytesToHuman($fileSize);
+}
+
+function replaceStrToLower($item): string
+{
+    $search = ['Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß', '´', ' ', '_'];
+    $replace = ['Ae', 'Oe', 'Ue', 'ae', 'oe', 'ue', 'ss', '', '-', '-'];
+
+    return strtolower(str_replace($search, $replace, $item));
+}
+
+function replaceStrToUpper($item): string
+{
+    $search = ['Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß', '´', ' ', '_'];
+    $replace = ['Ae', 'Oe', 'Ue', 'ae', 'oe', 'ue', 'ss', '', '-', '-'];
+
+    return strtoupper(str_replace($search, $replace, $item));
+}
+
+function replaceBlank($item): string
+{
+    $search = ['Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß', '´', ' ', '_'];
+    $replace = ['Ae', 'Oe', 'Ue', 'ae', 'oe', 'ue', 'ss', '', '-', '-'];
+
+    return str_replace($search, $replace, $item);
+}
+
+function replaceBlankMinus($item): string
+{
+    $search = ['Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß', '´', ' ', '-', '_'];
+    $replace = ['Ae', 'Oe', 'Ue', 'ae', 'oe', 'ue', 'ss', '', '-', ' ', '-'];
+
+    return str_replace($search, $replace, $item);
+}
+
+function mwst($preises, $mw_wert): array
+{
+    $preis = str_replace([',', '.'], '.', $preises);
+    $mwWert = (100 + $mw_wert) / 100;
+    $brutto = $preis * $mwWert;
+    $netto = $preis / $mwWert;
+    $mwstB = $preis - $netto;
+    $mwstN = $brutto - $preis;
+
+    return [
+        'brutto' => round($brutto, 2).' €',
+        'netto' => round($netto, 2).' €',
+        'mwstB' => round($mwstB, 2).' €',
+        'mwstN' => round($mwstN, 2).' €',
+    ];
+}
+
+function mwstClean($preises, $mw_wert): array
+{
+    $preis = str_replace([',', '.'], '.', $preises);
+    $mwWert = (100 + $mw_wert) / 100;
+    $brutto = $preis * $mwWert;
+    $netto = $preis / $mwWert;
+    $mwstB = $preis - $netto;
+    $mwstN = $brutto - $preis;
+
+    return [
+        'brutto' => round($brutto, 2),
+        'netto' => round($netto, 2),
+        'mwstB' => round($mwstB, 2),
+        'mwstN' => round($mwstN, 2),
+    ];
+}
+
+function marge($preisNetto, $preisBrutto): string
+{
+    $marge = number_format(0.00, 2, ',', '.').' %';
+    $netto = str_replace([',', '.'], '.', $preisNetto);
+    $brutto = str_replace([',', '.'], '.', $preisBrutto);
+    if ($preisNetto and $preisBrutto) {
+        $marge = (($netto - $brutto) / $brutto) * 100;
+
+        return round($marge, 2).' %';
+    }
+
+    return $marge;
+}
+
+function numberFormat($number, $decimal = 2): string
+{
+    return number_format($number, $decimal, ',', '.').' €';
+}
+
+function countryCode(): array
 {
     return [
         ['code' => 'AF', 'code3' => 'AFG', 'name' => 'Afghanistan', 'number' => '004'],
@@ -265,7 +375,7 @@ function countryCode()
     ];
 }
 
-function sort_by_hersteller()
+function sort_by_hersteller(): Illuminate\Database\Eloquent\Collection|_IH_Hersteller_C|array|Collection
 {
     $count = Hersteller::count();
 
@@ -281,7 +391,7 @@ function sort_by_hersteller()
     return $hersteller;
 }
 
-function kw_ps($wert)
+function kw_ps($wert): array
 {
     $faktor = 1.35962;
     $kw = number_format(round($wert * $faktor), 0);
@@ -293,7 +403,7 @@ function kw_ps($wert)
     ];
 }
 
-function fahrzeugSpecs()
+function fahrzeugSpecs(): array
 {
     return [
         'klasse' => [
@@ -338,6 +448,7 @@ function fahrzeugSpecs()
             'Hybrid (Benzin/Elektro)',
             'Hybrid (Diesel/Elektro)',
             'Wasserstoff',
+            'Benzin/Alkohol',
         ],
         'kat' => [
             'EURO 0',
@@ -364,10 +475,58 @@ function fahrzeugSpecs()
             'Halbautomatik',
             'Schaltgetriebe',
         ],
+        'farbe' => [
+            'Beige',
+            'Blau',
+            'Braun',
+            'Gelb',
+            'Gold',
+            'Grau',
+            'Grün',
+            'Orange',
+            'Rot',
+            'Schwarz',
+            'Silber',
+            'Violett',
+            'Weiß',
+        ],
     ];
 }
 
-function numberRanges($number, $prefix = '', $suffix = '')
+function kundenSpecs(): array
+{
+    return [
+        'anrede' => [
+            'Herr',
+            'Frau',
+            'Firma',
+            'Familie',
+            'Gemeinde',
+            'Markt',
+            'VG',
+            'Stadt',
+            'Landratsamt',
+            'Verein',
+        ],
+        'zahlungsbedingungen' => [
+            'Barzahlung',
+            'Sofort Netto Kasse',
+            '14 Tage / 2% Skonto',
+            'Kartenzahlung',
+            'Ratenzahlung',
+        ],
+        'preisgruppe' => [
+            'Normalpreise',
+            'Preisgruppe 1',
+            'Preisgruppe 2',
+            'Preisgruppe 3',
+            'Preisgruppe 4',
+            'Preisgruppe 5',
+        ],
+    ];
+}
+
+function numberRanges($number, $prefix = '', $suffix = ''): string
 {
     $format = $prefix.'%04d'.$suffix;
 

@@ -2,9 +2,11 @@
 
 namespace App\Models\Admin;
 
+use App\Models\Backend\Artikel\Artikel;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Warengruppe extends Model
@@ -30,5 +32,10 @@ class Warengruppe extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(__CLASS__, 'wg_parent_id');
+    }
+
+    public function artikels(): BelongsToMany
+    {
+        return $this->belongsToMany(Artikel::class, 'artikels_warengruppes');
     }
 }
