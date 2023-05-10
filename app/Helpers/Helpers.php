@@ -2,6 +2,8 @@
 
 use App\Models\Admin\Hersteller;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic;
 use LaravelIdea\Helper\App\Models\Admin\_IH_Hersteller_C;
 
 /**
@@ -12,6 +14,31 @@ use LaravelIdea\Helper\App\Models\Admin\_IH_Hersteller_C;
  * Date: 03.April.2023
  * Time: 17:24
  */
+function imageUpload($images, $path)
+{
+    if (! $images) {
+        return null;
+    }
+
+    foreach ($images as $image) {
+        $img = ImageManagerStatic::make($image)->encode('webp', 75);
+        $name = replaceBlank($image->getClientOriginalName().'.webp');
+        $thumbnails = ImageManagerStatic::make($image)->resize('152', '152', function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        })->encode('webp', 75);
+        Storage::disk('public')->put($path.'/thumbnails/'.$name, $thumbnails);
+        Storage::disk('public')->put($path.'/'.$name, $img);
+        $data[] = $name;
+        $size[] = bytesToHuman($image->getSize());
+    }
+
+    return [
+        'data' => $data,
+        'size' => $size,
+    ];
+}
+
 function bytesToHuman($bytes): string
 {
     $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];

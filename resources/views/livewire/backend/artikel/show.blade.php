@@ -155,20 +155,18 @@
                 <div>
 
                     <ul>
+                        @if(count($artikel->uploads) > 0)
                         <li class="font-semibold text-gray-900 dark:text-white mb-2 leading-none">Bild des Artikels</li>
                         <li class="mb-4 font-light w-full">
                             <div class="grid grid-cols-2 xl:grid-cols-3 gap-4">
-                                <div>
-                                    <img class="h-auto max-w-full rounded" src="https://via.placeholder.com/1024" alt="">
-                                </div>
-                                <div>
-                                    <img class="h-auto max-w-full rounded" src="https://via.placeholder.com/1024" alt="">
-                                </div>
-                                <div>
-                                    <img class="h-auto max-w-full rounded" src="https://via.placeholder.com/1024" alt="">
-                                </div>
+                                @foreach($artikel->uploads as $upload)
+                                    <div>
+                                        <img class="h-auto max-w-full rounded" src="{{ asset($upload->path) }}" alt="">
+                                    </div>
+                                @endforeach
                             </div>
                         </li>
+                        @endif
                         @if($artikel->lagers)
                             @if($artikel->lagers->la_bestand)
                                 <li class="font-semibold text-gray-900 dark:text-white mb-2 leading-none">Lagerbestand</li>
@@ -181,6 +179,13 @@
                                 <li class="mb-4 font-light">
                                     <span class="mr-2">Lagerführung:</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-flex text-green-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </li>
+                            @else
+                                <li class="mb-4 font-light">
+                                    <span class="mr-2">Lagerführung:</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-flex text-red-500">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </li>

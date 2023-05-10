@@ -19,7 +19,7 @@ class Show extends Component
 
     public function mount($id)
     {
-        $this->artikel = Artikel::with(['warengruppes', 'lagers', 'fahrzeugDatenHerstellers'])->find($id);
+        $this->artikel = Artikel::with(['warengruppes', 'lagers', 'fahrzeugDatenHerstellers', 'uploads'])->find($id);
     }
 
     public function render()

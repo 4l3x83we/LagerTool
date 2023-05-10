@@ -1,54 +1,32 @@
 <div class="mt-4"
      wire:ignore
-     x-data=""
-     x-cloak
-     {{--x-init="() => {
-        const post = FilePond.create($refs.{{ $attributes->get('ref') ?? 'input' }});
-            post.setOptions({
-                allowMultiple: {{ $attributes->has('multiple') ? 'true' : 'false' }},
-                server: {
-                    process:(fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
-                        @this.upload('{{ $attributes->whereStartsWith('wire:model')->first() }}', file, load, error, progress)
-                    },
-                    revert: (filename, load) => {
-                        @this.removeUpload('{{ $attributes->whereStartsWith('wire:model')->first() }}', filename, load)
-                    },
-                },
-                allowImagePreview: {{ $attributes->has('allowFileTypeValidation') ? 'true' : 'false' }},
-                imagePreviewMaxHeight: {{ $attributes->has('imagePreviewMaxHeight') ? $attributes->get('imagePreviewMaxHeight') : '256' }},
-                allowFileTypeValidation: {{ $attributes->has('allowFileTypeValidation') ? 'true' : 'false' }},
-                acceptedFileTypes: {!! $attributes->get('acceptedFileTypes') ?? 'null' !!},
-                allowFileSizeValidation: {{ $attributes->has('allowFileSizeValidation') ? 'true' : 'false' }},
-                maxFileSize: {!! $attributes->has('maxFileSize') ? "'".$attributes->get('maxFileSize')."'" : 'null' !!},
-            });
-    }"--}}
-    x-init="FilePond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
-        FilePond.setOptions({
-            allowMultiple: {{ isset($attributes['multiple']) ? 'true' : 'false' }},
-            server: {
-                process:(fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
-                    @this.upload('{{ $attributes->whereStartsWith('wire:model')->first() }}', file, load, error, progress)
-                },
-                revert: (filename, load) => {
-                    @this.removeUpload('{{ $attributes->whereStartsWith('wire:model')->first() }}', filename, load)
-                },
-            },
-        });
+     x-data
+     x-init="FilePond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
+         FilePond.setOptions({
+             allowMultiple: {{ isset($attributes['multiple']) ? 'true' : 'false' }},
+             server: {
+                 process:(fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                     @this.upload('{{ $attributes->whereStartsWith('wire:model')->first() }}', file, load, error, progress)
+                 },
+                 revert: (filename, load) => {
+                     @this.removeUpload('{{ $attributes->whereStartsWith('wire:model')->first() }}', filename, load)
+                 },
+             },
+         });
 
-        const pond = FilePond.create($refs.input, {
-            imagePreviewHeight: 270,
-            allowFileTypeValidation: 'true',
-            acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'],
-            allowFileSizeValidation: 'true',
-            maxFileSize: '2mb'
-        });
+         const pond = FilePond.create($refs.input, {
+             imagePreviewHeight: 270,
+             allowFileTypeValidation: 'true',
+             acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'],
+             allowFileSizeValidation: 'true',
+             maxFileSize: '10mb'
+         });
 
-        this.addEventListener('pondReset', e => {
-            pond.removeFile();
-        });
-    "
+         this.addEventListener('pondReset', e => {
+             pond.removeFile();
+         });
+     "
 >
-{{--    <input type="file" x-ref="{{ $attributes->get('ref') ?? 'input' }}" credits="false" />--}}
     <input type="file" x-ref="input" credits="false" />
     <x-ag.form.error id="{{ $id }}" />
 </div>
@@ -152,13 +130,5 @@
 @endpush
 
 @push('scripts')
-    @once
-        {{--<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                FilePond.registerPlugin(FilePondPluginImagePreview);
-                FilePond.registerPlugin(FilePondPluginFileValidateType);
-                FilePond.registerPlugin(FilePondPluginFileValidateSize);
-            });
-        </script>--}}
-    @endonce
+
 @endpush

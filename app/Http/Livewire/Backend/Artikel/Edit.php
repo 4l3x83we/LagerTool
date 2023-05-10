@@ -15,10 +15,14 @@ use App\Models\Admin\hersteller_artikel;
 use App\Models\Admin\MwSt;
 use App\Models\Admin\Warengruppe;
 use App\Models\Backend\Artikel\Artikel;
+use App\Models\Backend\Upload;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Edit extends Component
 {
+    use WithFileUploads;
+
     public $artikel;
 
     public $hersteller;
@@ -28,6 +32,8 @@ class Edit extends Component
     public $lager;
 
     public $warengruppe;
+
+    public $images = [];
 
     public $formStep = 1;
 
@@ -83,12 +89,13 @@ class Edit extends Component
             'lager.la_max' => 'nullable',
             'lager.la_lagerort' => 'nullable',
             'warengruppe.id' => 'nullable',
+            'images' => 'nullable|max:10240',
         ];
     }
 
     public function mount($id)
     {
-        $this->artikel = Artikel::with(['warengruppes', 'fahrzeugDatenHerstellers', 'lagers', 'preises'])->findOrFail($id);
+        $this->artikel = Artikel::with(['warengruppes', 'fahrzeugDatenHerstellers', 'lagers', 'preises', 'uploads'])->findOrFail($id);
         $this->warengruppe['id'] = $this->warengruppe();
         $this->preises = $this->artikel->preises;
         $this->lager = $this->artikel->lagers;
@@ -111,9 +118,23 @@ class Edit extends Component
             $warengruppeIds = [$warengruppe->id];
             $this->artikel->warengruppes()->sync($warengruppeIds);
         }
-        $this->artikel->update($this->validate()['artikel']);
+        $artikel = $this->artikel->update($this->validate()['artikel']);
         $this->preises->update($this->validate()['preises']);
         $this->lager->update($this->validate()['lager']);
+        $path = replaceStrToLower('images/'.$this->artikel->art_name.'/'.$this->artikel->id);
+        if (imageUpload($this->images, $path)) {
+            foreach ($this->images as $item => $image) {
+                Upload::create([
+                    'artikel_id' => $this->artikel->id,
+                    'fahrzeug_id' => null,
+                    'kunden_id' => null,
+                    'size' => imageUpload($this->images, $path)['size'][$item],
+                    'file' => imageUpload($this->images, $path)['data'][$item],
+                    'folder' => $path,
+                    'path' => $path.'/'.imageUpload($this->images, $path)['data'][$item],
+                ]);
+            }
+        }
 
         session()->flash('success', 'Der Artikel '.$this->artikel['art_name'].' wurde erfolgreich geändert.');
 

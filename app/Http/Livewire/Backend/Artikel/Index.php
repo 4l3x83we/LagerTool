@@ -14,6 +14,7 @@ use App\Models\Backend\Artikel\Artikel;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Storage;
 
 class Index extends Component
 {
@@ -59,9 +60,14 @@ class Index extends Component
 
     public function destroy(Artikel $artikel)
     {
+        Storage::disk('public')->deleteDirectory('images/'.$artikel->art_name.'/'.$artikel->id);
         session()->flash('error', $artikel->art_name.' erfolgreich gelöscht');
+        Storage::delete('public/'.$artikel->art_name.'/'.$artikel->id);
         $artikel->lagers->delete();
         $artikel->preises->delete();
+        foreach ($artikel->uploads as $upload) {
+            $upload->delete();
+        }
         $artikel->delete();
     }
 

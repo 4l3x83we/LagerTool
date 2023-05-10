@@ -6,8 +6,10 @@ use App\Http\Livewire\Admin\Settings\HerstellerArtikel;
 use App\Models\Admin\FahrzeugDatenHersteller;
 use App\Models\Admin\Warengruppe;
 use App\Models\Backend\Lager\Lager;
+use App\Models\Backend\Upload;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -40,5 +42,10 @@ class Artikel extends Model
     public function preises(): HasOne
     {
         return $this->hasOne(Preise::class);
+    }
+
+    public function uploads(): HasMany
+    {
+        return $this->hasMany(Upload::class, 'artikel_id');
     }
 }

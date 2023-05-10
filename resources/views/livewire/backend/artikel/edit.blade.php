@@ -113,6 +113,7 @@
                                 </table>
                                 <x-ag.heading heading="h5" textWidth="xl" text="Notiz" class="mb-2"/>
                                 <x-ag.textarea id="artikel.art_notiz" text="" content="{{ old('artikel.art_notiz') }}" rows="12" />
+                                <x-ag.form.file id="images" wire:model="images" multiple />
                             </div>
                         @endif
                         @if($formStep === 2)

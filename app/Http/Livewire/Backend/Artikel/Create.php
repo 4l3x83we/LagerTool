@@ -18,8 +18,6 @@ use App\Models\Backend\Artikel\Artikel;
 use App\Models\Backend\Artikel\Preise;
 use App\Models\Backend\Lager\Lager;
 use App\Models\Backend\Upload;
-use File;
-use Intervention\Image\Facades\Image;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -45,7 +43,9 @@ class Create extends Component
         'pr_mwst' => 19,
     ];
 
-    public $lager;
+    public $lager = [
+        'la_bestand' => 0,
+    ];
 
     public $warengruppe;
 
@@ -65,12 +65,12 @@ class Create extends Component
         return [
             'artikel.id' => 'nullable',
             'artikel.art_lieferant_id' => 'nullable',
-            //            'artikel.art_nr' => 'required',
-            //            'artikel.art_name' => 'required',
+            'artikel.art_nr' => 'required',
+            'artikel.art_name' => 'required',
             'artikel.art_ean' => 'nullable',
-            //            'artikel.art_einheit' => 'required',
-            //            'artikel.art_mwst' => 'required',
-            //            'artikel.art_hersteller' => 'required',
+            'artikel.art_einheit' => 'required',
+            'artikel.art_mwst' => 'required',
+            'artikel.art_hersteller' => 'required',
             'artikel.art_notiz' => 'nullable',
             'artikel.art_beschreibung' => 'nullable',
             'preises.artikel_id' => 'nullable',
@@ -96,8 +96,8 @@ class Create extends Component
             'lager.la_min' => 'nullable',
             'lager.la_max' => 'nullable',
             'lager.la_lagerort' => 'nullable',
-            //            'warengruppe.id' => 'required',
-            'images' => ['nullable', 'image', 'max:10240'],
+            'warengruppe.id' => 'required',
+            'images' => ['nullable', 'max:10240'],
         ];
     }
 
@@ -187,44 +187,17 @@ class Create extends Component
 
     public function store()
     {
-        /*$images = collect($this->images)->each(fn ($image) => $image->getRealPath()
-        );*/
-        $path = '/images/'.replaceBlank('artikel id');
-        $images = $this->images;
-        if (! empty($images)) {
-            foreach ($this->images as $image) {
-                $imageName = replaceBlank(time().'-'.$image->getClientOriginalName());
-                if (! File::isDirectory(public_path($path))) {
-                    File::makeDirectory(public_path($path), 777, true, true);
-                }
-
-                if (! File::isDirectory(public_path($path.'/thumbnails'))) {
-                    File::makeDirectory(public_path($path.'/thumbnails'), 777, true, true);
-                }
-
-                $thumbnails = Image::make($image)->resize(151.2, 151.2, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                })->stream();
-                File::put(public_path($path.'/thumbnails/'.$imageName), $thumbnails);
-
-                $photo = Image::make($image)->stream();
-                File::put(public_path($path.'/'.$imageName), $photo);
-                Upload::create([
-                    'artikel_id' => 2,
-                    'size' => bytesToHuman($image->getSize()),
-                    'file' => $imageName,
-                    'folder' => $path,
-                    'path' => $path.'/'.$imageName,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-            dd($this->images, $imageName, $path, $photo, $thumbnails);
-        }
-
-        dd($images);
+        dd($this->images);
         $this->validate();
+        $this->preises['pr_netto_ek'] = str_replace([',', '.'], '.', $this->preises['pr_netto_ek']);
+        $this->preises['pr_brutto_ek'] = str_replace([',', '.'], '.', $this->preises['pr_brutto_ek']);
+        $this->preises['pr_netto_vk'] = str_replace([',', '.'], '.', $this->preises['pr_netto_vk']);
+        $this->preises['pr_brutto_vk'] = str_replace([',', '.'], '.', $this->preises['pr_brutto_vk']);
+        $this->preises['pr_prg_1_netto_vk'] = str_replace([',', '.'], '.', $this->preises['pr_prg_1_netto_vk']);
+        $this->preises['pr_prg_2_netto_vk'] = str_replace([',', '.'], '.', $this->preises['pr_prg_2_netto_vk']);
+        $this->preises['pr_prg_3_netto_vk'] = str_replace([',', '.'], '.', $this->preises['pr_prg_3_netto_vk']);
+        $this->preises['pr_prg_4_netto_vk'] = str_replace([',', '.'], '.', $this->preises['pr_prg_4_netto_vk']);
+        $this->preises['pr_prg_5_netto_vk'] = str_replace([',', '.'], '.', $this->preises['pr_prg_5_netto_vk']);
         if (! empty($this->artikel['art_notiz'])) {
             $this->artikel['art_notiz'] = nl2br(htmlentities($this->validate()['artikel']['art_notiz'], ENT_QUOTES, 'UTF-8'));
         }
@@ -253,6 +226,18 @@ class Create extends Component
         Lager::create($this->validate()['lager']);
         Preise::create($this->validate()['preises']);
         $artikel->warengruppes()->attach($this->warengruppe['id']);
+        $path = replaceStrToLower('images/'.$artikel->art_name.'/'.$artikel->id);
+        if (imageUpload($this->images, $path)) {
+            foreach ($this->images as $item => $image) {
+                Upload::create([
+                    'artikel_id' => $artikel->id,
+                    'size' => imageUpload($this->images, $path)['size'][$item],
+                    'file' => imageUpload($this->images, $path)['data'][$item],
+                    'folder' => $path,
+                    'path' => $path.'/'.imageUpload($this->images, $path)['data'][$item],
+                ]);
+            }
+        }
 
         session()->flash('success', 'Artikel wurde erfolgreich angelegt.');
 
